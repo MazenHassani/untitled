@@ -32,7 +32,7 @@ SCServo SERVO2;
 //define 12 servos for 4 legs
 //Servo servo[4][3];
 //define servos' ports
-//const int servo_pin[4][3] = { {2, 3, 4}, {5, 6, 7}, {8, 9, 10}, {11, 12, 13} };
+const int servoIDs[4][3] = { {2, 3, 1}, {5, 6, 4}, {8, 9, 7}, {11, 12, 10} };
 /* Size of the robot ---------------------------------------------------------*/
 const float length_a = 55;
 const float length_b = 77.5;
@@ -85,6 +85,7 @@ void setup()
 
   Serial2.begin(1000000);
   SERVO2.pSerial = &Serial2;
+  
   //initialize default parameter
   set_site(0, x_default - x_offset, y_start + y_step, z_boot);
   set_site(1, x_default - x_offset, y_start + y_step, z_boot);
@@ -734,22 +735,27 @@ void polar_to_servo(int leg, float alpha, float beta, float gamma)
     beta = beta;
     gamma += 90;
   }
-  
+  //conversion
   alpha = (alpha * 1023) / 200 ;
   beta = (beta * 1023) / 200 ;
   gamma = (gamma * 1023) / 200 ;
 
+  /*
+  servo[leg][0].write(alpha);
+  servo[leg][1].write(beta);
+  servo[leg][2].write(gamma);
+  */
   int Time = 100;
   if (leg==0 || leg ==1)
   {
-    SERVO1.WritePos(leg+1, alpha, Time);
-    SERVO1.WritePos(leg+2, beta , Time);
-    SERVO1.WritePos(leg+3, gamma, Time);
+    SERVO1.WritePos(servoIDs[leg][0], alpha, Time);
+    SERVO1.WritePos(servoIDs[leg][1], beta , Time);
+    SERVO1.WritePos(servoIDs[leg][2], gamma, Time);
   }
   else if (leg==2 || leg==3)
   {
-    SERVO2.WritePos(leg+1, alpha, Time);
-    SERVO2.WritePos(leg+2, beta , Time);
-    SERVO2.WritePos(leg+3, gamma, Time);
+    SERVO2.WritePos(servoIDs[leg][0], alpha, Time);
+    SERVO2.WritePos(servoIDs[leg][1], beta , Time);
+    SERVO2.WritePos(servoIDs[leg][2], gamma, Time);
   }
 }
